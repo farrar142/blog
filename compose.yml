@@ -1,0 +1,9 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./dockerfile
+    container_name: blog_backend
+    volumes:
+      - ./backend:/usr/src/app
+    entrypoint: tail -f /dev/null

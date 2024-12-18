@@ -1,0 +1,14 @@
+FROM python:3.12-alpine
+WORKDIR /usr/src/app
+RUN apk add --update \
+    build-base \
+    libffi-dev \
+    libpq \
+    libpq-dev \
+    musl-dev \
+    python3-dev \
+    zlib-dev \
+    && pip install --upgrade pip 
+COPY ./requirements.txt ./requirements.txt
+RUN pip install -r requirements.txt
+# RUN apk del build-base libffi-dev  libpq libpq-dev musl-dev python3-dev zlib-dev
