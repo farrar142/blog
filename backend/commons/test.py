@@ -1,8 +1,9 @@
 from functools import partial, wraps
-from typing import Any, Callable, NoReturn, ParamSpec, TypeVar
+from inspect import signature
+from typing import Any, Callable, Concatenate, Literal, NoReturn, ParamSpec, TypeVar
 from django.contrib.auth.models import AbstractBaseUser
 from django.http.response import HttpResponse
-from django.test import TestCase as TC, Client as C
+from django.test import TestCase as TC, Client as Cl
 
 from authentications.tokens import RefreshToken
 
@@ -11,7 +12,7 @@ P = ParamSpec("P")
 T = TypeVar("T")
 
 
-class Client(C):
+class Client(Cl):
     def _login(self, token: str):
         if not self.headers:
             self.headers = dict()

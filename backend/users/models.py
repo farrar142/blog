@@ -5,33 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 
-
-class Builder[T]:
-
-    def __init__(self, model: type[T]):
-        self.model = model
-        self.kwargs = dict()
-
-    def set(self, key: str, value: Any):
-        self.kwargs[key] = value
-        return self
-
-    def from_dict(self, dictionary: dict):
-        for key, value in dictionary.items():
-            self.set(key, value)
-        return self
-
-    def build(self):
-        model = self.model()
-        for key, value in self.kwargs.items():
-            setattr(model, key, value)
-        return model
-
-
-class WithBuild:
-    @classmethod
-    def builder(cls):
-        return Builder(cls)
+from commons.builders import WithBuild
 
 
 # Create your models here.
