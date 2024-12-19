@@ -13,9 +13,6 @@ T = TypeVar("T")
 
 
 class Client(Cl):
-    @property
-    def pp(self):
-        return pprint
 
     def _login(self, token: str):
         if not self.headers:
@@ -46,4 +43,7 @@ class Client(Cl):
 class TestCase(TC):
     client: Client
     client_class = Client
-    pass
+
+    @property
+    def pp(self):
+        return pprint
