@@ -17,7 +17,7 @@ class BaseModel(models.Model):
 
 
 def get_owner_model(user_cls: type[U], related_name: str):
-    class OwnerModel(BaseModel, Generic[user_cls]):
+    class OwnerModel(BaseModel):
         class Meta:
             abstract = True
 
