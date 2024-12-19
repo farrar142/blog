@@ -21,5 +21,10 @@ class TestArticle(TestCase):
     def test_post_article(self):
         self.client.login(self.user)
         resp = self.client.post("/articles/", dict(title="test", content="test"))
-        print(resp.json())
+        self.assertEqual(resp.status_code, 200)
+
+    def test_post_wrong_article(self):
+        self.client.login(self.user)
+        resp = self.client.post("/articles/", dict(title="", content=""))
+
         self.assertEqual(resp.status_code, 200)

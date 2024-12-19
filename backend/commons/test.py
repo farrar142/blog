@@ -1,6 +1,6 @@
-from functools import partial, wraps
-from inspect import signature
-from typing import Any, Callable, Concatenate, Literal, NoReturn, ParamSpec, TypeVar
+from functools import partial
+from pprint import pprint
+from typing import ParamSpec, TypeVar
 from django.contrib.auth.models import AbstractBaseUser
 from django.http.response import HttpResponse
 from django.test import TestCase as TC, Client as Cl
@@ -13,6 +13,10 @@ T = TypeVar("T")
 
 
 class Client(Cl):
+    @property
+    def pp(self):
+        return pprint
+
     def _login(self, token: str):
         if not self.headers:
             self.headers = dict()
