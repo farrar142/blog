@@ -1,7 +1,4 @@
-from typing import Any, NoReturn
-from django.test import TestCase
-
-# Create your tests here.
+from commons.test import TestCase
 
 
 class TestNinja(TestCase):
@@ -90,9 +87,9 @@ class TestNinja(TestCase):
             # content_type="application/json",
         )
         self.assertEqual(resp.status_code, 200)
-        resp = self.client.get(
-            "/auth/me", headers=dict(Authorization=f"bearer {resp.json()['access']}")
-        )
+        self.client._login(f"bearer {resp.json()['access']}")
+        resp = self.client.get("/auth/me")
+        self.assertEqual(resp.status_code, 200)
         print(resp.json())
 
     def test_json_content(self):
