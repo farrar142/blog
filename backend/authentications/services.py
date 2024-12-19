@@ -4,7 +4,7 @@ from .forms import *
 
 
 class AuthService:
-    user_repository = UserRepository()
+    user_repository = UserRepository(User)
 
     def signup(self, schema: SignUpForm):
         if self.user_repository.is_username_exists(schema.username):

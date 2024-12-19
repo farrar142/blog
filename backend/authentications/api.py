@@ -14,7 +14,7 @@ router = Router(tags=["auth"])
 @router.post("/signup", response=TokenResponse)
 def signup(
     request: WSGIRequest,
-    form: Form[SignUpForm],
+    form: SignUpForm,
 ):
     service = AuthService()
     user = service.signup(form)
@@ -33,7 +33,7 @@ def signin(request: WSGIRequest, username: Form[str], password: Form[str]):
 
 
 @router.post("/refresh", response=TokenResponse)
-def refresh(request: WSGIRequest, form: Form[RefreshForm]):
+def refresh(request: WSGIRequest, form: RefreshForm):
     token = RefreshToken.decode(form.refresh)
 
     return dict(refresh=token.encode(), access=token.access_token.encode())

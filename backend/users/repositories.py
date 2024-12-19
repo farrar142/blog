@@ -1,15 +1,11 @@
 from monad import Maybe
+from commons.repository import Repository
 from .models import User
 
 
-class UserRepository:
+class UserRepository(Repository[User, int]):
     def is_username_exists(self, username: str):
-        return User.objects.filter(username=username).exists()
+        return self.exists(username=username)
 
-    @Maybe.wraps
     def find_by_username(self, username: str):
-        return User.objects.filter(username=username).first()
-
-    @Maybe.wraps
-    def find_by_id(self, id: int):
-        return User.objects.filter(id=id).first()
+        return self.find_by(username=username)

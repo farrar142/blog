@@ -1,3 +1,4 @@
+from typing import Any, NoReturn
 from django.test import TestCase
 
 # Create your tests here.
@@ -93,3 +94,16 @@ class TestNinja(TestCase):
             "/auth/me", headers=dict(Authorization=f"bearer {resp.json()['access']}")
         )
         print(resp.json())
+
+    def test_json_content(self):
+        resp = self.client.post(
+            "/auth/signup",
+            dict(
+                email="test@test.com",
+                username="testuser",
+                password="1234",
+                check_password="1234",
+            ),
+            content_type="application/json",
+        )
+        self.assertEqual(resp.status_code, 200)
