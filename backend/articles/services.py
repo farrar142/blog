@@ -1,4 +1,5 @@
-from ninja import PatchDict
+# from ninja import PatchDict
+from commons.ninjas import PatchDict
 from commons.repository import Repository
 from commons.services import Service
 from users.models import User

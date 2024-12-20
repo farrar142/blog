@@ -1,3 +1,5 @@
+import functools
+from typing import Any, Callable, Generator, Generic, Iterable, TypeVar
 from authentications.services import AuthService, SignUpForm
 from commons.test import TestCase
 from users.services import UserService
@@ -49,10 +51,49 @@ class TestArticle(TestCase):
 
         self.client.login(self.user2)
         resp = self.client.patch(f"/articles/{id}", dict(title="hello", content="bye"))
-        self.pp(resp.json())
         self.assertEqual(resp.status_code, 403)
 
         self.client.login(self.user)
         resp = self.client.patch(f"/articles/{id}", dict(title="hello"))
-        print(resp.json())
         self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()["title"], "hello")
+
+
+T = TypeVar("T")
+U = TypeVar("U")
+V = TypeVar("V")
+
+
+class Stream[T]:
+    @staticmethod
+    def __generator(elements: Iterable[T]) -> Generator[T, Any, None]:
+        for element in elements:
+            yield element
+
+    def __map(self, func: Callable[[T], U]) -> Generator[U, Any, None]:
+        for element in self.value:
+            yield func(element)
+
+    def __filter(self, func: Callable[[T], bool]) -> Generator[T, Any, None]:
+        for element in self.value:
+            if func(element):
+                yield element
+
+    def __init__(self, value: Generator[T, Any, None]):
+        self.value = value
+
+    @classmethod
+    def from_iter(cls, args: Iterable[T]):
+        return cls(cls.__generator(args))
+
+    def to_list(self):
+        return list(self.value)
+
+    def map(self, func: Callable[[T], U]):
+        return Stream(self.__map(func))
+
+    def filter(self, func: Callable[[T], bool]):
+        return Stream(self.__filter(func))
+
+    def reduce(self, func: Callable[[U, T], U], initial: U):
+        return functools.reduce(func, self.value, initial)

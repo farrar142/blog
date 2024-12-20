@@ -1,12 +1,12 @@
-from typing import Optional, Protocol
 from django.http import Http404
-from ninja import Form, PatchDict, Router, Schema, errors
+from ninja import Form, Router, Schema, errors
 
 from articles.models import Article
 from articles.services import ArticleService
 from authentications.bearers import JwtBearer
 from backend.errors import PermissionDenied
 from backend.requests import AuthenticatedRequest
+from commons.ninjas import PatchDict
 from commons.permissions import is_resource_owner
 from users.models import User, models
 from users.schemas import UserSchema
@@ -30,7 +30,5 @@ def patch(request: AuthenticatedRequest[User], pk: int, form: PatchDict[ArticleF
     article = service.find_by_id(pk).or_else_throw(Http404)
     if not is_resource_owner(request.auth)(article):
         raise PermissionDenied("permission denied")
-    print(form)
-    # service.modify(article, form)
 
-    return article
+    return service.modify(article, form)
