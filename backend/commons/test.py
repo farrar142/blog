@@ -34,7 +34,9 @@ class Client(Cl):
         return partial(super().post, headers=self.headers)(*args, **kwargs)
 
     def patch(self, *args, **kwargs) -> HttpResponse:
-        return partial(super().patch, headers=self.headers)(*args, **kwargs)
+        headers = {"CONTENT_TYPE": "application/json"}
+        headers.update(**self.headers)
+        return partial(super().patch, headers=headers)(*args, **kwargs)
 
     def delete(self, *args, **kwargs) -> HttpResponse:
         return partial(super().delete, headers=self.headers)(*args, **kwargs)

@@ -16,3 +16,8 @@ class Error[T](Exception):
             return ninja.create_response(
                 request, dict(message=exc.message), status=exc.status
             )
+
+
+class PermissionDenied[T](Error[T]):
+    def __init__(self, message: T) -> None:
+        super().__init__(message=message, status=403)

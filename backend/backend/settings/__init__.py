@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    # "backend.middlewares.PutPatchWithFileFormMiddleware",
     "backend.middlewares.ApplicationJsonConvertMiddleware",
     # "django.contrib.sessions.middleware.SessionMiddleware",
     # "django.middleware.common.CommonMiddleware",
