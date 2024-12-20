@@ -53,6 +53,6 @@ class TestArticle(TestCase):
         self.assertEqual(resp.status_code, 403)
 
         self.client.login(self.user)
-        resp = self.client.patch(f"/articles/{id}", dict(title="hello", content="bye"))
+        resp = self.client.patch(f"/articles/{id}", dict(title="hello"))
         print(resp.json())
         self.assertEqual(resp.status_code, 200)

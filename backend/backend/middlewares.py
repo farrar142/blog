@@ -38,11 +38,7 @@ json_parser = json_formatter.map(json.loads)
 
 class ApplicationJsonConvertMiddleware(MiddlewareMixin):
     @Result.wraps
-    def parse(self, request: HttpRequest):
-        if not (is_target_method(request)):
-            return
-        if not (is_json(request)):
-            return
+    def parse_json(self, request: HttpRequest):
         jsoned = json_formatter.run(request.body)
         data = json_to_querydict(jsoned)
         body = jsoned.encode("utf-8")
@@ -52,28 +48,27 @@ class ApplicationJsonConvertMiddleware(MiddlewareMixin):
         setattr(request, "_stream", body)
         setattr(request, "_read_started", False)
 
+    @Result.wraps
+    def fill_post(self, request: HttpRequest):
+        if request.method == "POST":
+            return
+        if hasattr(request, "_post"):  # post 데이터 삭제
+            del request._post  # type:ignore
+            del request._files  # type:ignore
+        initial_method = request.method
+        request.method = "POST"
+        request.META["REQUEST_METHOD"] = "POST"
+        request._load_post_and_files()
+        request.META["REQUEST_METHOD"] = initial_method
+        request.method = initial_method
+
     def process_request(self, request: HttpRequest):
-        self.parse(request)
+        if not is_target_method(request):
+            return
+        if is_json(request):
+            self.parse_json(request)
+        else:
+            self.fill_post(request)
 
     def process_response(self, request, response):
         return response
-
-
-class PutPatchWithFileFormMiddleware(MiddlewareMixin):
-    def process_request(self, request):
-        if (
-            request.method in ("PUT", "PATCH")
-            and request.content_type != "application/json"
-        ):
-            if hasattr(request, "_post"):  # post 데이터 삭제
-                del request._post
-                del request._files
-            try:
-                initial_method = request.method
-                request.method = "POST"  # 리퀘스트 메서드를 POST로 임시 변경
-                request.META["REQUEST_METHOD"] = "POST"
-                request._load_post_and_files()  # 이 부분이 핵심
-                request.META["REQUEST_METHOD"] = initial_method  # 원래 메서드로 되돌림
-                request.method = initial_method  # 원래 메서드로 되돌림
-            except Exception:
-                pass

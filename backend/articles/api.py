@@ -26,16 +26,11 @@ def post(request: AuthenticatedRequest[User], form: Form[ArticleForm]):
 
 
 @router.patch("/{pk}", response=ArticleSchema, auth=JwtBearer())
-def patch(request: AuthenticatedRequest[User], pk: int, form: ArticleForm):
-    print("ehy?")
+def patch(request: AuthenticatedRequest[User], pk: int, form: PatchDict[ArticleForm]):
     article = service.find_by_id(pk).or_else_throw(Http404)
     if not is_resource_owner(request.auth)(article):
         raise PermissionDenied("permission denied")
     print(form)
-    print("???")
-    # try:
-    #     service.modify(article, form)
-    # except Exception as e:
-    #     print(e)
+    # service.modify(article, form)
 
     return article
